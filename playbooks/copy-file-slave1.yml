@@ -1,0 +1,20 @@
+---
+- name: Copy sample web page to Nginx on Slave 1
+  hosts: web
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Copy sample HTML page to Nginx document root
+      ansible.builtin.copy:
+        src: ../files/index.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure Nginx is running
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true

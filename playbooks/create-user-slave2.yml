@@ -1,0 +1,25 @@
+---
+- name: Create practice user and directory on Slave 2
+  hosts: app
+  become: true
+  gather_facts: false
+
+  vars:
+    practice_user: ansiblelab
+    practice_directory: /opt/ansible-lab
+
+  tasks:
+    - name: Create practice user
+      ansible.builtin.user:
+        name: "{{ practice_user }}"
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    - name: Create practice directory
+      ansible.builtin.file:
+        path: "{{ practice_directory }}"
+        state: directory
+        owner: "{{ practice_user }}"
+        group: "{{ practice_user }}"
+        mode: "0755"

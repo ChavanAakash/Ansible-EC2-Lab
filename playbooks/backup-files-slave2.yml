@@ -1,0 +1,25 @@
+---
+- name: Create compressed backup on Slave 2
+  hosts: app
+  become: true
+  gather_facts: true
+
+  vars:
+    backup_source: /opt/ansible-lab
+    backup_directory: /var/backups/ansible-lab
+
+  tasks:
+    - name: Ensure backup directory exists
+      ansible.builtin.file:
+        path: "{{ backup_directory }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0750"
+
+    - name: Create a timestamped archive of the practice directory
+      ansible.builtin.archive:
+        path: "{{ backup_source }}"
+        dest: "{{ backup_directory }}/ansible-lab-{{ ansible_date_time.date }}-{{ ansible_date_time.time | replace(':', '-') }}.tar.gz"
+        format: gz
+        mode: "0640"

@@ -1,0 +1,26 @@
+---
+- name: Verify backup archive on Slave 2
+  hosts: app
+  become: true
+  gather_facts: true
+
+  vars:
+    backup_directory: /var/backups/ansible-lab
+
+  tasks:
+    - name: Find backup archives
+      ansible.builtin.find:
+        paths: "{{ backup_directory }}"
+        patterns: "ansible-lab-*.tar.gz"
+        file_type: file
+      register: backup_files
+
+    - name: Confirm at least one backup archive exists
+      ansible.builtin.assert:
+        that:
+          - backup_files.matched | int > 0
+        fail_msg: "No backup archive found in {{ backup_directory }}."
+
+    - name: Display backup archive paths
+      ansible.builtin.debug:
+        msg: "{{ backup_files.files | map(attribute='path') | list }}"

@@ -1,0 +1,8 @@
+---
+- name: Check connectivity to both EC2 managed nodes
+  hosts: managed
+  gather_facts: false
+
+  tasks:
+    - name: Ping managed node
+      ansible.builtin.ping:
